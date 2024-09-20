@@ -2,7 +2,7 @@
 
 <?php
 // การเชื่อมต่อฐานข้อมูล
-require './api/db_connect.php'; // เชื่อมต่อฐานข้อมูล
+require './api/db_connect.php'; // เชื่อมต่อฐานข้อมูลhhhh
 
 // เชื่อมต่อฐานข้อมูล
 $conn = new mysqli($servername, $username, $password, $dbname);
