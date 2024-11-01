@@ -206,7 +206,7 @@ $conn->close();
     <div class="student-info">
         <div class="d-flex align-items-center">
             <div class="image">
-                <img src="../assets/img/logo.png" width="155">
+                <img src="../assets/img/logo12.png" width="155">
             </div>
             <div class="ml-3 w-100 student-details">
                 <div>
@@ -221,10 +221,7 @@ $conn->close();
                     </h4>
                     <h4>ชื่อ| <?php echo htmlspecialchars($seller_name ?? $employee_name); ?></h4>
                 </div>
-                <div class="balance">
-                    <span class="rating">ยอด (บาท):</span>
-                    <h2 class="number3"><?php echo htmlspecialchars($balance ?? 'N/A'); ?></h2>
-                </div>
+
             </div>
         </div>
         <?php if (strpos($role, 'Employee') !== false): ?>
@@ -243,7 +240,7 @@ $conn->close();
                         <span class="number3"><?php echo htmlspecialchars($employer_name); ?></span>
                     </div>
                     <div>
-                        <span class="rating">สถานะ|</span>
+
 
 
                     </div>
@@ -260,7 +257,7 @@ $conn->close();
                         <span class="number2"><?php echo htmlspecialchars($responsibility_area ?? ''); ?></span>
                     </div>
                     <div>
-                        <span class="rating">สถานะ|</span>
+
                         <!-- ถ้ามีสถานะ ก็แสดงค่าที่นี่ -->
                     </div>
                 </div>
@@ -306,8 +303,9 @@ $conn->close();
                                 <input class="form-control" type="number" name="quantity[]" placeholder="กรอกจำนวน" required oninput="updateTotal(this)">
                             </td>
                             <td>
-                                <input class="form-control" type="text" name="price_per_unit[]" placeholder="0" readonly>
+                                <input class="form-control" type="text" name="price_per_unit[]" placeholder="0" oninput="updateTotal(this)">
                             </td>
+
                             <td>
                                 <input class="form-control" type="text" name="total_price[]" placeholder="0" readonly>
                             </td>
@@ -337,18 +335,24 @@ $conn->close();
             // ดึงราคาจาก attribute 'data-price'
             const price = parseFloat(selectElement.selectedOptions[0].getAttribute('data-price')) || 0;
 
-            priceInput.value = price.toFixed(2); // แสดงราคาต่อหน่วย
-            updateTotal(quantityInput); // อัพเดทราคารวม
+            // แสดงราคาต่อหน่วย แต่ผู้ใช้สามารถแก้ไขได้
+            priceInput.value = price.toFixed(2);
+            updateTotal(quantityInput); // อัพเดทราคารวมเมื่อเลือกประเภทยาง
         }
 
-        function updateTotal(quantityInput) {
-            const row = quantityInput.closest('tr');
-            const quantity = parseFloat(quantityInput.value) || 0;
-            const pricePerUnit = parseFloat(row.querySelector('input[name="price_per_unit[]"]').value) || 0;
+
+        function updateTotal(inputElement) {
+            const row = inputElement.closest('tr');
+            const quantityInput = row.querySelector('input[name="quantity[]"]');
+            const pricePerUnitInput = row.querySelector('input[name="price_per_unit[]"]');
             const totalPriceInput = row.querySelector('input[name="total_price[]"]');
+
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const pricePerUnit = parseFloat(pricePerUnitInput.value) || 0;
 
             totalPriceInput.value = (quantity * pricePerUnit).toFixed(2);
         }
+
 
         function addItem() {
             let newRow = `

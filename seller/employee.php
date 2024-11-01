@@ -34,7 +34,7 @@ if ($result === false) {
 <div class="container">
     <!-- ปุ่มสำหรับแสดงฟอร์มการเพิ่มลูกจ้าง -->
     <button id="showFormButton" class="btn btn-success mt-4">เพิ่มลูกจ้าง</button>
-    
+
     <!-- ส่วนของการเพิ่มพนักงาน (ซ่อนฟอร์มตั้งแต่แรก) -->
     <div id="addEmployeeForm" class="card card-custom mt-4" style="display: none;">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -48,22 +48,23 @@ if ($result === false) {
                 </div>
                 <div class="form-group">
                     <label for="phone_number">เบอร์โทร</label>
-                    <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="กรอกเบอร์โทร" required>
+                    <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="กรอกเบอร์โทร" required>
+                    <small class="form-text text-muted">กรุณากรอกเบอร์โทร</small>
                 </div>
                 <div class="form-group">
-                <label for="commission_percentage">เปอร์เซ็นแบ่งส่วน</label>
-                <input type="text" class="form-control" id="commission_percentage" name="commission_percentage" placeholder="กรอกเปอร์เซ็นแบ่งส่วน" required>
-            </div>
-            <div class="form-group">
-                <label for="responsibility_area">เขตที่รับผิดชอบ</label>
-                <input type="text" class="form-control" id="responsibility_area" name="responsibility_area" placeholder="กรอกเขตที่รับผิดชอบ" required>
-            </div>
+                    <label for="commission_percentage">เปอร์เซ็นแบ่งส่วน</label>
+                    <input type="number" class="form-control" id="commission_percentage" name="commission_percentage" placeholder="กรอกเปอร์เซ็นแบ่งส่วน" min="0" max="100" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="responsibility_area">เขตที่รับผิดชอบ</label>
+                    <input type="text" class="form-control" id="responsibility_area" name="responsibility_area" placeholder="กรอกเขตที่รับผิดชอบ" required>
+                </div>
                 <hr>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">บันทึก</button>
                     <button type="button" id="hideFormButton" class="btn btn-danger">ยกเลิก</button>
                 </div>
-                
+
             </form>
         </div>
     </div>
@@ -84,21 +85,21 @@ if ($result === false) {
                 </thead>
                 <tbody class="table-border-bottom-0">
                     <?php while ($row = $result->fetch_assoc()): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($row['name'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['phone_number'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($row['commission_percentage'] ?? ''); ?>%</td>
-                        <td><?php echo htmlspecialchars($row['responsibility_area'] ?? ''); ?></td>
-                        <td>
-                            <div class="dropdown">
-                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item edit-button" href="#" data-id="<?php echo $row['employee_id']; ?>" data-name="<?php echo htmlspecialchars($row['name'] ?? ''); ?>" data-phone_number="<?php echo htmlspecialchars($row['phone_number'] ?? ''); ?>" data-commission_percentage="<?php echo htmlspecialchars($row['commission_percentage'] ?? ''); ?>" data-responsibility_area="<?php echo htmlspecialchars($row['responsibility_area'] ?? ''); ?>"><i class="bx bx-edit-alt me-2"></i> Edit</a>
-                                    <a class="dropdown-item" href="delete_employee.php?id=<?php echo $row['employee_id']; ?>"><i class="bx bx-trash me-2"></i> Delete</a>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['name'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['phone_number'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($row['commission_percentage'] ?? ''); ?>%</td>
+                            <td><?php echo htmlspecialchars($row['responsibility_area'] ?? ''); ?></td>
+                            <td>
+                                <div class="dropdown">
+                                    <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="bx bx-dots-vertical-rounded"></i></button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item edit-button" href="#" data-id="<?php echo $row['employee_id']; ?>" data-name="<?php echo htmlspecialchars($row['name'] ?? ''); ?>" data-phone_number="<?php echo htmlspecialchars($row['phone_number'] ?? ''); ?>" data-commission_percentage="<?php echo htmlspecialchars($row['commission_percentage'] ?? ''); ?>" data-responsibility_area="<?php echo htmlspecialchars($row['responsibility_area'] ?? ''); ?>"><i class="bx bx-edit-alt me-2"></i> Edit</a>
+                                        <a class="dropdown-item" href="delete_employee.php?id=<?php echo $row['employee_id']; ?>"><i class="bx bx-trash me-2"></i> Delete</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
                     <?php endwhile; ?>
                 </tbody>
             </table>
@@ -146,52 +147,66 @@ if ($result === false) {
     </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var showFormButton = document.getElementById('showFormButton');
-    var hideFormButton = document.getElementById('hideFormButton');
-    var addEmployeeForm = document.getElementById('addEmployeeForm');
-    var employeeForm = document.getElementById('employeeForm');
+    document.addEventListener('DOMContentLoaded', function() {
+        var showFormButton = document.getElementById('showFormButton');
+        var hideFormButton = document.getElementById('hideFormButton');
+        var addEmployeeForm = document.getElementById('addEmployeeForm');
+        var employeeForm = document.getElementById('employeeForm');
 
-    // แสดงฟอร์มเมื่อกดปุ่ม "เพิ่มลูกจ้าง"
-    showFormButton.addEventListener('click', function() {
-        addEmployeeForm.style.display = 'block';
-        showFormButton.style.display = 'none';
-    });
+        // แสดงฟอร์มเมื่อกดปุ่ม "เพิ่มลูกจ้าง"
+        showFormButton.addEventListener('click', function() {
+            addEmployeeForm.style.display = 'block';
+            showFormButton.style.display = 'none';
+        });
 
-    // ซ่อนฟอร์มเมื่อกดปุ่ม "ยกเลิก"
-    hideFormButton.addEventListener('click', function() {
-        addEmployeeForm.style.display = 'none';
-        showFormButton.style.display = 'block';
-    });
+        // ซ่อนฟอร์มเมื่อกดปุ่ม "ยกเลิก"
+        hideFormButton.addEventListener('click', function() {
+            addEmployeeForm.style.display = 'none';
+            showFormButton.style.display = 'block';
+        });
 
-    // ซ่อนฟอร์มหลังจากบันทึกข้อมูล
-    employeeForm.addEventListener('submit', function() {
-        addEmployeeForm.style.display = 'none';
-        showFormButton.style.display = 'block';
-    });
+        // ซ่อนฟอร์มหลังจากบันทึกข้อมูล
+        employeeForm.addEventListener('submit', function() {
+            addEmployeeForm.style.display = 'none';
+            showFormButton.style.display = 'block';
+        });
 
-    // Code for the edit modal
-    var editButtons = document.querySelectorAll('.edit-button');
-    
-    editButtons.forEach(function(button) {
-        button.addEventListener('click', function() {
-            var employee_id = this.getAttribute('data-id');
-            var name = this.getAttribute('data-name');
-            var phone_number = this.getAttribute('data-phone_number');
-            var commission_percentage = this.getAttribute('data-commission_percentage');
-            var responsibility_area = this.getAttribute('data-responsibility_area');
+        // Code for the edit modal
+        var editButtons = document.querySelectorAll('.edit-button');
 
-            document.getElementById('edit_employee_id').value = employee_id;
-            document.getElementById('edit_name').value = name;
-            document.getElementById('edit_phone_number').value = phone_number;
-            document.getElementById('edit_commission_percentage').value = commission_percentage;
-            document.getElementById('edit_responsibility_area').value = responsibility_area;
+        editButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                var employee_id = this.getAttribute('data-id');
+                var name = this.getAttribute('data-name');
+                var phone_number = this.getAttribute('data-phone_number');
+                var commission_percentage = this.getAttribute('data-commission_percentage');
+                var responsibility_area = this.getAttribute('data-responsibility_area');
 
-            var editModal = new bootstrap.Modal(document.getElementById('editModal'));
-            editModal.show();
+                document.getElementById('edit_employee_id').value = employee_id;
+                document.getElementById('edit_name').value = name;
+                document.getElementById('edit_phone_number').value = phone_number;
+                document.getElementById('edit_commission_percentage').value = commission_percentage;
+                document.getElementById('edit_responsibility_area').value = responsibility_area;
+
+                var editModal = new bootstrap.Modal(document.getElementById('editModal'));
+                editModal.show();
+            });
         });
     });
-});
+    document.getElementById('commission_percentage').addEventListener('input', function() {
+        var value = parseFloat(this.value);
+        if (value < 0 || value > 100) {
+            alert('เปอร์เซ็นแบ่งส่วนต้องอยู่ระหว่าง 0 ถึง 100');
+            this.value = ''; // ล้างค่า input
+        }
+    });
+    document.getElementById('phone_number').addEventListener('input', function() {
+        var phoneNumber = this.value;
+        if (phoneNumber.length > 11) {
+            alert('เบอร์โทรต้องไม่เกิน 11 หลัก');
+            this.value = phoneNumber.slice(0, 11); // ตัดให้เหลือแค่ 11 หลัก
+        }
+    });
 </script>
 
 

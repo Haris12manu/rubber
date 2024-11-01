@@ -46,22 +46,22 @@
                 <h3 class="card-label">รายงานการขายยาง</h3>
             </div>
             <div class="card-body">
-                <!-- ฟอร์มสำหรับการเลือกช่วงวันที่ -->
-                <form id="dateForm" class="form-inline mb-4">
-                    <label for="start_date" class="mr-2">เลือกวันที่เริ่มต้น:</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control mr-2" value="<?php echo date('Y-m-d'); ?>">
-
-                    <label for="end_date" class="mr-2">เลือกวันที่สิ้นสุด:</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control mr-2" value="<?php echo date('Y-m-d'); ?>">
-
-                    <button type="submit" class="btn btn-primary">ดูรายงาน</button>
+                <form id="searchForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="startDate">วันที่เริ่มต้น</label>
+                            <input type="date" class="form-control" id="startDate" name="start">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="endDate">วันที่สิ้นสุด</label>
+                            <input type="date" class="form-control" id="endDate" name="end">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">ค้นหา</button>
                 </form>
-
-                <!-- พื้นที่สำหรับการแสดงผล -->
-                <div id="resultArea">
+                <div id="resultArea" class="mt-4">
                     <!-- เนื้อหาที่ดึงมาจาก AJAX จะแสดงตรงนี้ -->
                 </div>
-
             </div>
         </div>
     </div>
@@ -70,36 +70,29 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
-            // ดึงข้อมูลทั้งหมดเมื่อหน้าโหลด
-            fetchSalesData();
-
-            // ฟังก์ชันสำหรับการดึงข้อมูลตามวันที่ที่เลือก
-            $('#dateForm').submit(function(event) {
-                event.preventDefault(); // ป้องกันการรีเฟรชหน้า
-
-                var startDate = $('#start_date').val(); // รับค่า start_date
-                var endDate = $('#end_date').val(); // รับค่า end_date
-
-                fetchSalesData(startDate, endDate); // ดึงข้อมูลตามวันที่เลือก
+            // ดึงข้อมูลเมื่อฟอร์มถูกส่ง
+            $('#searchForm').on('submit', function(e) {
+                e.preventDefault();
+                fetchSalesData($('#startDate').val(), $('#endDate').val());
             });
 
-            function fetchSalesData(startDate = null, endDate = null) {
-                $.ajax({
-                    url: 'fetch_sales_data.php',
-                    type: 'GET',
-                    data: {
-                        start_date: startDate,
-                        end_date: endDate
-                    },
-                    success: function(data) {
-                        $('#resultArea').html(data); // แสดงผลข้อมูลใน resultArea
-                    },
-                    error: function() {
-                        $('#resultArea').html('<p class="text-center text-danger mt-4">เกิดข้อผิดพลาดในการดึงข้อมูล</p>');
-                    }
-                });
-            }
+            // ดึงข้อมูลทั้งหมดเมื่อหน้าโหลด
+            fetchSalesData();
         });
+
+        function fetchSalesData(startDate = null, endDate = null) {
+            $.ajax({
+                url: 'fetch_sales_data.php',
+                method: 'GET',
+                data: {
+                    start: startDate,
+                    end: endDate
+                },
+                success: function(data) {
+                    $('#resultArea').html(data); // แสดงผลข้อมูลใน resultArea
+                },
+            });
+        }
     </script>
 </body>
 

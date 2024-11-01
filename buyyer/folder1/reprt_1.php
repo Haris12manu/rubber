@@ -1,82 +1,3 @@
-<?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-require('../api/db_connect.php');
-
-if ($conn->connect_error) {
-    die("การเชื่อมต่อฐานข้อมูลล้มเหลว: " . $conn->connect_error);
-}
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../login.php");
-    exit();
-}
-
-$user_id = $_SESSION['user_id'];
-
-$query = "SELECT store_id FROM purchasing_stores WHERE user_id = ?";
-$stmt = $conn->prepare($query);
-if ($stmt === false) {
-    die("การเตรียมคำสั่ง SQL ล้มเหลว: " . $conn->error);
-}
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$stmt->bind_result($store_id);
-$stmt->fetch();
-$stmt->close();
-
-if (empty($store_id)) {
-    die("ไม่พบข้อมูลร้านค้า");
-}
-
-// รับค่าจากฟอร์มค้นหา
-$start_month = isset($_GET['start_month']) ? $_GET['start_month'] : date('m');
-$start_year = isset($_GET['start_year']) ? $_GET['start_year'] : date('Y');
-$end_month = isset($_GET['end_month']) ? $_GET['end_month'] : date('m');
-$end_year = isset($_GET['end_year']) ? $_GET['end_year'] : date('Y');
-
-// แปลงเดือนและปีที่เลือกให้เป็นวันที่เริ่มต้นและสิ้นสุด
-$start_date = "$start_year-$start_month-01";
-$end_date = date("Y-m-t", strtotime("$end_year-$end_month-01"));
-
-$query = "
-    SELECT 
-        pl.record_id, 
-        pl.store_id, 
-        pl.total_purchases, 
-        pl.total_sales, 
-        pl.profit_loss, 
-        pl.record_date, 
-        GROUP_CONCAT(rs.rubber_type SEPARATOR ', ') AS rubber_types,
-        DATE_FORMAT(pl.record_date, '%Y-%m') AS sale_month
-    FROM 
-        profit_loss pl
-    INNER JOIN 
-        rubber_sales rs 
-    ON 
-        pl.store_id = rs.store_id 
-        AND pl.record_date = rs.sale_date
-    WHERE 
-        pl.store_id = ?
-        AND pl.record_date BETWEEN ? AND ?
-    GROUP BY 
-        pl.record_id
-    ORDER BY 
-        pl.record_date ASC
-";
-
-$stmt = $conn->prepare($query);
-if ($stmt === false) {
-    die("การเตรียมคำสั่ง SQL ล้มเหลว: " . $conn->error);
-}
-$stmt->bind_param("iss", $store_id, $start_date, $end_date);
-$stmt->execute();
-$result = $stmt->get_result();
-
-?>
-
 <!DOCTYPE html>
 <html lang="th">
 
@@ -143,48 +64,50 @@ $result = $stmt->get_result();
                 </div>
             </div>
             <div class="card-body">
-                <form class="form" id="kt_form" action="" method="GET">
-                    <div class="row">
-                        <div class="form-group row col-5">
-                            <label class="col-4 my-2">เดือนเริ่มต้น :</label>
-                            <select class="form-control col-4" name="start_month">
-                                <?php for ($m = 1; $m <= 12; $m++) : ?>
-                                    <option value="<?php echo $m; ?>" <?php if ($start_month == $m) echo 'selected'; ?>>
-                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                            <select class="form-control col-4" name="start_year">
-                                <?php for ($y = date('Y'); $y >= date('Y') - 10; $y--) : ?>
-                                    <option value="<?php echo $y; ?>" <?php if ($start_year == $y) echo 'selected'; ?>>
-                                        <?php echo $y; ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                        <div class="form-group row col-5">
-                            <label class="col-4 my-2">เดือนสิ้นสุด :</label>
-                            <select class="form-control col-4" name="end_month">
-                                <?php for ($m = 1; $m <= 12; $m++) : ?>
-                                    <option value="<?php echo $m; ?>" <?php if ($end_month == $m) echo 'selected'; ?>>
-                                        <?php echo date('F', mktime(0, 0, 0, $m, 10)); ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                            <select class="form-control col-4" name="end_year">
-                                <?php for ($y = date('Y'); $y >= date('Y') - 10; $y--) : ?>
-                                    <option value="<?php echo $y; ?>" <?php if ($end_year == $y) echo 'selected'; ?>>
-                                        <?php echo $y; ?>
-                                    </option>
-                                <?php endfor; ?>
-                            </select>
-                        </div>
-                        <div class="form-group col-2">
-                            <button class="btn btn-primary col-12" type="submit">ค้นหา</button>
-                        </div>
+
+                <!-- ฟอร์มเลือกเดือนและปี -->
+                <form id="searchForm" method="GET" class="form-inline mb-4">
+                    <div class="form-group">
+                        <label for="start_month">เดือน:</label>
+                        <select id="start_month" name="start_month" class="form-control mx-sm-2">
+                            <?php
+                            $months = [
+                                '01' => 'มกราคม',
+                                '02' => 'กุมภาพันธ์',
+                                '03' => 'มีนาคม',
+                                '04' => 'เมษายน',
+                                '05' => 'พฤษภาคม',
+                                '06' => 'มิถุนายน',
+                                '07' => 'กรกฎาคม',
+                                '08' => 'สิงหาคม',
+                                '09' => 'กันยายน',
+                                '10' => 'ตุลาคม',
+                                '11' => 'พฤศจิกายน',
+                                '12' => 'ธันวาคม'
+                            ];
+
+                            foreach ($months as $month_value => $month_name) {
+                                echo "<option value='$month_value'" . ($month_value == $start_month ? ' selected' : '') . ">$month_name</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
+
+                    <div class="form-group mx-sm-3">
+                        <label for="start_year">ปี:</label>
+                        <select id="start_year" name="start_year" class="form-control mx-sm-2">
+                            <?php for ($y = date('Y'); $y >= 2000; $y--) {
+                                $thai_year = $y + 543; // แปลงปี ค.ศ. เป็น พ.ศ.
+                                echo "<option value='$y'" . ($y == $start_year ? ' selected' : '') . ">$thai_year</option>";
+                            } ?>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">ค้นหา</button>
                 </form>
 
+
+                <!-- ตารางแสดงผล -->
                 <table class="table table-bordered mt-4">
                     <thead>
                         <tr style="background-color: pink">
@@ -195,7 +118,7 @@ $result = $stmt->get_result();
                             <th style="text-align: center;">กำไรขาดทุน (บาท)</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="reportTableBody">
                         <?php
                         // ตัวแปรสำหรับการนับลำดับการขายในแต่ละเดือน
                         $index = 1;
@@ -235,18 +158,101 @@ $result = $stmt->get_result();
                         } else {
                             echo "<tr><td colspan='5' style='text-align: center;'>ไม่พบข้อมูล</td></tr>";
                         }
-
-                        // ปิดการเชื่อมต่อฐานข้อมูล
-                        $conn->close();
                         ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // ส่งคำขอ AJAX เพื่อแสดงข้อมูลของเดือนปัจจุบันโดยอัตโนมัติ
+            var start_month = new Date().getMonth() + 1; // เดือนปัจจุบัน (0-11) + 1
+            var start_year = new Date().getFullYear(); // ปีปัจจุบัน
+
+            // ฟอร์แมตเดือนเป็น 2 หลัก
+            start_month = ('0' + start_month).slice(-2);
+            const currentMonth = new Date().getMonth() + 1; // เดือนปัจจุบัน (0-11) + 1
+            const monthSelect = document.getElementById('start_month');
+            monthSelect.value = currentMonth < 10 ? '0' + currentMonth : currentMonth; // ฟอร์แมตเดือนให้เป็น 2 หลัก
+
+            $.ajax({
+                url: 'report.php?ajax=1&start_month=' + start_month + '&start_year=' + start_year,
+                method: 'GET',
+                success: function(data) {
+                    var reports = JSON.parse(data);
+                    var tbody = $('#reportTableBody');
+                    tbody.empty(); // ล้างตารางก่อน
+
+                    if (reports.length > 0) {
+                        reports.forEach(function(report, index) {
+                            tbody.append(`<tr>
+                        <td style='text-align: center;'>${index + 1}</td>
+                        <td>${report.rubber_types}</td>
+                        <td style='text-align: center;'>${report.total_sales}</td>
+                        <td style='text-align: center;'>${report.total_purchases}</td>
+                        <td style='text-align: center;'>${report.profit_loss}</td>
+                    </tr>`);
+                        });
+                    } else {
+                        tbody.append("<tr><td colspan='5' style='text-align: center;'>ไม่พบข้อมูล</td></tr>");
+                    }
+                },
+                error: function() {
+                    alert('เกิดข้อผิดพลาดในการค้นหา โปรดลองใหม่อีกครั้ง');
+                }
+            });
+
+            $('#searchForm').submit(function(e) {
+                e.preventDefault(); // ป้องกันการส่งฟอร์มตามปกติ
+
+                // รับค่าจากฟอร์ม
+                var start_month = $('#start_month').val();
+                var start_year = $('#start_year').val();
+
+                // ส่งคำขอ AJAX
+                $.ajax({
+                    url: 'report.php?ajax=1&start_month=' + start_month + '&start_year=' + start_year,
+                    method: 'GET',
+                    success: function(data) {
+                        var reports = JSON.parse(data);
+                        var tbody = $('#reportTableBody');
+                        tbody.empty(); // ล้างตารางก่อน
+
+                        if (reports.length > 0) {
+                            reports.forEach(function(report, index) {
+                                var rubber_types_display = '';
+                                if (report.rubber_types.includes('Mixed (Dry, Wet)')) {
+                                    rubber_types_display = 'ยางรวม';
+                                } else if (report.rubber_types.includes('Dry')) {
+                                    rubber_types_display = 'ยางแห้ง';
+                                } else if (report.rubber_types.includes('Wet')) {
+                                    rubber_types_display = 'ยางเปียก';
+                                } else {
+                                    rubber_types_display = 'ไม่ทราบประเภท';
+                                }
+
+                                tbody.append(`<tr>
+                            <td style='text-align: center;'>${index + 1}</td>
+                            <td>${rubber_types_display}</td>
+                            <td style='text-align: center;'>${report.total_sales}</td>
+                            <td style='text-align: center;'>${report.total_purchases}</td>
+                            <td style='text-align: center;'>${report.profit_loss}</td>
+                        </tr>`);
+                            });
+                        } else {
+                            tbody.append("<tr><td colspan='5' style='text-align: center;'>ไม่พบข้อมูล</td></tr>");
+                        }
+                    },
+                    error: function() {
+                        alert('เกิดข้อผิดพลาดในการค้นหา โปรดลองใหม่อีกครั้ง');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

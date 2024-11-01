@@ -17,19 +17,6 @@ $result = $conn->query($sql);
             <div class="card-title">
                 <h3 class="card-label">ประเภทยาง</h3>
             </div>
-            <div class="card-toolbar">
-                <a href="index.php?page=aad_type.php" class="btn btn-success" id="addTypeButton">
-                    <span class="icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                                <rect x="0" y="0" width="24" height="24"></rect>
-                                <circle fill="#ffffff" cx="12" cy="12" r="10"></circle>
-                                <path d="M12 7v10M7 12h10" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </g>
-                        </svg>
-                    </span> เพิ่มประเภท
-                </a>
-            </div>
         </div>
         <div class="card-body">
             <div class="datatable datatable-default datatable-bordered datatable-loaded">
@@ -40,8 +27,6 @@ $result = $conn->query($sql);
                             <th data-field="ลำดับ" class="datatable-cell datatable-cell-sort"><span style="width: 155px;">ลำดับ</span></th>
                             <th data-field="ชื่อประเภท" class="datatable-cell datatable-cell-sort"><span style="width: 155px;">ชื่อประเภท</span></th>
                             <th data-field="รายละเอียด" class="datatable-cell datatable-cell-sort"><span style="width: 155px;">รายละเอียด</span></th>
-                            <th data-field="แก้ไข" class="datatable-cell datatable-cell-sort"><span style="width: 155px;">แก้ไข</span></th>
-                            <th data-field="ลบ" class="datatable-cell datatable-cell-sort"><span style="width: 155px;">ลบ</span></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,8 +39,6 @@ $result = $conn->query($sql);
                                 echo "<td class='datatable-cell'><span style='width: 155px;'>" . $row["id"] . "</span></td>";
                                 echo "<td class='datatable-cell'><span style='width: 155px;'>" . $row["type_name"] . "</span></td>";
                                 echo "<td class='datatable-cell'><span style='width: 155px;'>" . $row["description"] . "</span></td>";
-                                echo "<td class='datatable-cell'><span style='width: 155px;'><a href='edit_type.php?id=" . $row["id"] . "' class='btn btn-warning'>แก้ไข</a></span></td>";
-                                echo "<td class='datatable-cell'><span style='width: 155px;'><a href='delete_type.php?id=" . $row["id"] . "' class='btn btn-danger'>ลบ</a></span></td>";
                                 echo "</tr>";
                             }
                         } else {
@@ -76,12 +59,6 @@ $result = $conn->query($sql);
 <div class="modal fade" id="addTypeModal" tabindex="-1" role="dialog" aria-labelledby="addTypeModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addTypeModalLabel">เพิ่มประเภท</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
             <div class="modal-body">
                 <form id="addTypeForm">
                     <div class="form-group">

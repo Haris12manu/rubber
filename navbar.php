@@ -3,7 +3,7 @@
     <ul class="sidebar-nav" id="sidebar-nav">
 
       <li class="nav-item">
-        <a class="nav-link " href="index.php">
+        <a class="nav-link collapsed " href="index.php">
           <i class="bi bi-grid"></i>
           <span>หน้าแรก</span>
         </a>
@@ -27,3 +27,21 @@
     </ul>
 
   </aside>
+
+  <script>
+    function setActiveLink() {
+    const links = document.querySelectorAll('.nav-link'); // หาลิงก์ทั้งหมด
+    const currentPage = window.location.href; // หาหน้าปัจจุบัน
+
+    links.forEach(link => {
+      const linkPage = link.getAttribute('href'); // หาหน้าในลิงก์
+
+      // ถ้าลิงก์ตรงกับหน้าปัจจุบัน
+      if (currentPage.includes(linkPage)) {
+        link.classList.remove('collapsed'); // ลบคลาส collapsed
+      } else {
+        link.classList.add('collapsed'); // เพิ่มคลาส collapsed
+      }
+    });
+  }
+  </script>

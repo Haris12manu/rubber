@@ -18,7 +18,6 @@ $selected_year = isset($_GET['year']) ? intval($_GET['year']) : date('Y');
 
 // สร้าง array สำหรับจัดเก็บข้อมูลแยกตามประเภทของยาง
 $data = [
-    'ยางอื่นๆ' => array_fill(1, 12, 0),
     'ยางแห้ง' => array_fill(1, 12, 0),
     'ยางเปียก' => array_fill(1, 12, 0),
     'ยางร่วมทั้งหมด' => array_fill(1, 12, 0)

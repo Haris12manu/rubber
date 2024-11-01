@@ -9,22 +9,30 @@ if (isset($_POST['search_query'])) {
     $search_query = $_POST['search_query'];
 }
 ?>
+<header>
+    <style>
+         section {
+        font-family: 'Prompt', sans-serif;
+    }
+
+    </style>
+</header>
 <section class="section">
     <div class="row">
         <div class="col-lg-12">
 
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Search Seller and Employee</h5>
+                    <h5 class="card-title">ค้นหาผู้ขายและพนักงาน</h5>
 
                     <!-- Search Form -->
                     <form method="POST" action="">
                         <div class="form-group">
-                            <label for="search_query">Search</label>
+                            <label for="search_query">ค้นหา</label>
                             <input type="text" class="form-control" id="search_query" name="search_query" placeholder="Search by name" value="<?php echo htmlspecialchars($search_query, ENT_QUOTES); ?>">
                         </div>
                         <hr>
-                        <button type="submit" class="btn btn-primary">Search</button>
+                        <button type="submit" class="btn btn-primary">ค้นหารายชื่อ</button>
                     </form>
 
                     <?php if ($search_query !== ''): ?>
@@ -33,9 +41,9 @@ if (isset($_POST['search_query'])) {
                             <thead>
                                 <tr>
                                     <th>ชื่อ</th>
-                                    <th>Phone</th>
-                                    <th>Role</th>
-                                    <th>Actions</th>
+                                    <th>เบอร์</th>
+                                    <th>ประเภท</th>
+                                    <th>จัดการ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -77,7 +85,6 @@ if (isset($_POST['search_query'])) {
                                         <form method="POST" action="index.php?page=folder1/sales_history.php" style="display: inline-block;">
                                             <input type="hidden" name="seller_id" value="' . htmlspecialchars($id) . '">
                                             <input type="hidden" name="role" value="' . htmlspecialchars($role) . '">
-                                            <button type="submit" class="btn btn-outline-secondary">ดูประวัติการขาย</button>
                                         </form>
                                     </td>';
                                         echo '</tr>';

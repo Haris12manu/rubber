@@ -65,8 +65,6 @@ if (!empty($data)) {
     echo '<table class="table table-bordered">';
     echo '<thead>';
     echo '<tr>';
-    echo '<th>รหัสการขาย</th>';
-    echo '<th>รหัสร้านค้า</th>';
     echo '<th>ชื่อโรงงาน</th>';
     echo '<th>ปริมาณยาง (กก)</th>';
     echo '<th>ราคาต่อหน่วย (บาท/กก)</th>';
@@ -80,15 +78,21 @@ if (!empty($data)) {
 
     foreach ($data as $row) {
         echo '<tr>';
-        echo '<td>' . htmlspecialchars($row['sale_id']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['store_id']) . '</td>';
         echo '<td>' . htmlspecialchars($row['factory_name']) . '</td>';
         echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
         echo '<td>' . htmlspecialchars($row['price_per_unit']) . '</td>';
         echo '<td>' . htmlspecialchars($row['total_price']) . '</td>';
         echo '<td>' . htmlspecialchars($row['sale_date']) . '</td>';
         echo '<td>' . htmlspecialchars($row['rubber_percentage']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['rubber_type']) . '</td>';
+        if ($row['rubber_type'] === 'Mixed (Dry, Wet)') {
+            echo '<td>ยางร่วม</td>';
+        } elseif ($row['rubber_type'] === 'Dry') {
+            echo '<td>ยางแห้ง</td>';
+        } elseif ($row['rubber_type'] === 'Wet') {
+            echo '<td>ยางเปียก</td>';
+        } else {
+            echo '<td>' . htmlspecialchars($row['rubber_type']) . '</td>';
+        }
         echo '</tr>';
     }
 
@@ -97,4 +101,3 @@ if (!empty($data)) {
 } else {
     echo '<p class="text-center mt-4">ไม่พบข้อมูล</p>';
 }
-?>

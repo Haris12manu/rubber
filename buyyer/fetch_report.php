@@ -70,11 +70,11 @@ if ($result->num_rows > 0) {
         echo "<td style='text-align: center;'>" . htmlspecialchars($index) . "</td>";
         echo "<td style='text-align: center;'>" . htmlspecialchars($sellerName) . "</td>";
         echo "<td style='text-align: center;'>" . htmlspecialchars($employerName) . "</td>";
-        echo "<td style='text-align: center;'>" . htmlspecialchars($row['quantity']) . "</td>";
+        echo "<td style='text-align: center;'>" . htmlspecialchars($row['quantity']) .'.ก.ก'. "</td>";
         echo "<td style='text-align: center;'>" . htmlspecialchars($rubberTypeDisplay) . "</td>";
-        echo "<td style='text-align: center;'>" . htmlspecialchars($row['price_per_unit']) . "</td>";
-        echo "<td style='text-align: center;'>" . htmlspecialchars($row['total_price']) . "</td>";
-        echo "<td style='text-align: center;'>" . date('d-m-Y', strtotime($row['purchase_date'])) . "</td>";
+        echo "<td style='text-align: center;'>" . htmlspecialchars($row['price_per_unit']) .'.บาท'. "</td>";
+        echo "<td style='text-align: center;'>" . htmlspecialchars($row['total_price']) .'.บาท'. "</td>";
+        echo "<td style='text-align: center;'>" . date('d-m-', strtotime($row['purchase_date'])) . (date('Y', strtotime($row['purchase_date'])) + 543) . "</td>";
 
         // เพิ่มไอคอนในคอลัมน์นี้
         echo "<td style='text-align: center;'>

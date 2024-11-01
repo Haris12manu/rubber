@@ -25,6 +25,7 @@ if (empty($store_id)) {
     die("ไม่พบข้อมูลร้านค้า");
 }
 
+
 $sql = "
     SELECT 
         COUNT(DISTINCT CASE WHEN seller_id IS NOT NULL THEN seller_id ELSE employee_id END) AS total_sellers, 
@@ -215,16 +216,19 @@ $profit_loss_data = $result_profit_loss->fetch_assoc();
 $stmt_profit_loss->close();
 
 // ดึงข้อมูลยางในคลังที่ยังไม่ได้ขาย
+// ดึงข้อมูลยางในคลังที่ยังไม่ได้ขาย โดยเลือกข้อมูลจากเดือนล่าสุดและเดือนก่อนหน้า
 $sql_inventory = "
     SELECT 
         rubber_type,
-        GREATEST(0, SUM(quantity)) AS current_inventory
+        GREATEST(0, SUM(quantity)) AS current_inventory,
+        MONTH(purchase_date) AS month
     FROM 
         rubber_purchases
     WHERE 
         store_id = ? AND sale_status = '0' -- เลือกเฉพาะยางที่ยังไม่ถูกขายออกไป
+        AND MONTH(purchase_date) IN (MONTH(CURDATE()), MONTH(CURDATE()) - 1)
     GROUP BY 
-        rubber_type;
+        rubber_type, MONTH(purchase_date);
 ";
 
 $stmt_inventory = $conn->prepare($sql_inventory);
@@ -245,14 +249,38 @@ $inventory_data = [
     'Wet' => 0,
 ];
 $total_inventory = 0;
+$total_previous_inventory = 0;
+
+// กำหนดชื่อเดือน
+$month_names = [
+    1 => 'มกราคม',
+    2 => 'กุมภาพันธ์',
+    3 => 'มีนาคม',
+    4 => 'เมษายน',
+    5 => 'พฤษภาคม',
+    6 => 'มิถุนายน',
+    7 => 'กรกฎาคม',
+    8 => 'สิงหาคม',
+    9 => 'กันยายน',
+    10 => 'ตุลาคม',
+    11 => 'พฤศจิกายน',
+    12 => 'ธันวาคม'
+];
 
 while ($row = $result_inventory->fetch_assoc()) {
     $rubber_type = $row['rubber_type'];
     $current_quantity = $row['current_inventory'] ?? 0;
+    $month = $row['month'];
 
-    // จัดเก็บข้อมูลยางในคลังตามประเภท
-    if (isset($inventory_data[$rubber_type])) {
-        $inventory_data[$rubber_type] = $current_quantity;
+    // จัดเก็บข้อมูลยางในคลังตามประเภทและเดือน
+    if ($month == date('n')) { // เดือนปัจจุบัน
+        if (isset($inventory_data[$rubber_type])) {
+            $inventory_data[$rubber_type] += $current_quantity; // เพิ่มยอดจากเดือนปัจจุบัน
+        }
+    } elseif ($month == date('n') - 1) { // เดือนก่อนหน้า
+        if (isset($inventory_data[$rubber_type])) {
+            $total_previous_inventory += $current_quantity; // เพิ่มยอดจากเดือนก่อนหน้า
+        }
     }
 
     // คำนวณจำนวนยางรวม

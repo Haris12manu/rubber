@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 // เปลี่ยนเส้นทางตามประเภทผู้ใช้
                 switch ($user['user_type']) {
-                    case 'admin':
+                    case 'Admin':
                         header("Location: ./admin/index.php");
                         break;
                     case 'Purchasing Store':

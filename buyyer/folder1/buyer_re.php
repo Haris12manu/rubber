@@ -44,8 +44,11 @@
         <div class="card card-custom">
             <div class="card-header flex-wrap border-0 pt-6 pb-0">
                 <div class="card-title">
-                    <h3 id="reportTitle" class="card-label">สรุปรายงานยอดรับซื้อยางประจำปี <?php echo date('Y') + 543; ?></h3>
+                    <h3 id="reportTitle" class="card-label" style="color: white;">
+                        สรุปรายงานยอดรับซื้อยางประจำปี <?php echo date('Y') + 543; ?>
+                    </h3>
                 </div>
+
             </div>
             <div class="card-body">
                 <!-- ฟอร์มสำหรับการเลือกปี -->
@@ -56,7 +59,8 @@
                             <select class="form-control" id="year" name="year">
                                 <?php
                                 for ($year = date('Y'); $year >= 2000; $year--) {
-                                    echo "<option value='$year'>" . htmlspecialchars($year) . "</option>";
+                                    $buddhist_year = $year + 543;
+                                    echo "<option value='$year'>" . htmlspecialchars($buddhist_year) . "</option>";
                                 }
                                 ?>
                             </select>
@@ -94,7 +98,9 @@
                 $.ajax({
                     url: 'fetch_data.php',
                     type: 'GET',
-                    data: { year: year },
+                    data: {
+                        year: year
+                    },
                     success: function(data) {
                         $('#resultArea').html(data); // แสดงผลข้อมูลใน resultArea
                         updateTitle(year); // อัปเดตชื่อหัวเรื่อง

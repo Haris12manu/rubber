@@ -40,7 +40,6 @@ if (!isset($_SESSION['user_id'])) {
                             <select id="id" name="id" class="form-control" required>
                                 <option value="1">ยางแห้ง</option>
                                 <option value="2">ยางเปียก</option>
-                                <option value="4">อื่นๆ</option>
                                 <!-- เพิ่มประเภทยางตามที่คุณมีในระบบ -->
                             </select>
                         </div>

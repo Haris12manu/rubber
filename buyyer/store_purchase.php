@@ -61,6 +61,20 @@ if ($seller_id) {
 
         if ($stmt->execute()) {
             $purchase_id = $stmt->insert_id;
+
+            // บันทึกข้อมูลลงในตาราง notifications
+            $notification_message = "New purchase recorded: $quantity kg of rubber type $rubber_type.";
+            $notification_status = 'unread'; // สถานะการแจ้งเตือน
+            $created_at = date("Y-m-d H:i:s");
+
+            $stmt_notification = $conn->prepare("INSERT INTO notifications (store_id, seller_id, purchase_id, message, notification_status, created_at) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt_notification->bind_param("iiisss", $store_id, $seller_id, $purchase_id, $notification_message, $notification_status, $created_at);
+
+            if (!$stmt_notification->execute()) {
+                error_log("Error inserting notification: " . $stmt_notification->error);
+            }
+
+            $stmt_notification->close();
         } else {
             echo "Error: " . $stmt->error;
             exit();

@@ -1,4 +1,4 @@
-<?php include_once ('select.php')
+<?php include_once('select.php')
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -98,6 +98,35 @@
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
+    .card-overlay:before {
+      content: "";
+      position: absolute;
+      height: 70%;
+      width: 100%;
+      bottom: 0;
+      background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), to(rgb(0, 0, 0)));
+      background-image: linear-gradient(180deg, transparent, rgb(0, 0, 0));
+      z-index: 1;
+    }
+
+    .card-overlay .card-img-overlay {
+      z-index: 2;
+    }
+
+    .card-overlay .card-image-full {
+      max-height: 400px;
+      object-fit: cover;
+    }
+
+    .card-overlay .card-text {
+      -webkit-transition: all 0.2s ease-in-out;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .card-overlay:hover .card-text {
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 
@@ -133,70 +162,34 @@
           <div class="row">
 
             <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-              <div class="card info-card sales-card">
+            <div class="col-md-6">
+              <a href="registe.php" style="text-decoration: none; color: inherit;">
+                <div class="card info-card sales-card">
+                  <div class="card-body">
+                    <h5 class="card-title">สำหรับผู้ขาย</h5>
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Sales <span>| Today</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-cart"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>145</h6>
-                      <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                    <div class="d-flex align-items-center">
+                      <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                        <i class="bi bi-person"></i>
+                      </div>
                     </div>
                   </div>
                 </div>
-
-              </div>
-            </div><!-- End Sales Card -->
+              </a>
+            </div>
+            <!-- End Sales Card -->
 
             <!-- Revenue Card -->
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-md-6">
+            <a href="registe.php" style="text-decoration: none; color: inherit;">
               <div class="card info-card revenue-card">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-
-
                 <div class="card-body">
-                  <h5 class="card-title">Revenue <span>| This Month</span></h5>
+                  <h5 class="card-title">สำหรับร้านรับซ์้อ</span></h5>
 
                   <div class="d-flex align-items-center">
                     <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-currency-dollar"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>$3,264</h6>
-                      <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                      <i class="bi bi-person"></i>
                     </div>
                   </div>
                 </div>
@@ -204,51 +197,9 @@
               </div>
             </div><!-- End Revenue Card -->
 
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
-
-              <div class="card info-card customers-card">
-
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
-
-                <div class="card-body">
-                  <h5 class="card-title">Customers <span>| This Year</span></h5>
-
-                  <div class="d-flex align-items-center">
-                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i class="bi bi-people"></i>
-                    </div>
-                    <div class="ps-3">
-                      <h6>1244</h6>
-                      <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-            </div><!-- End Customers Card -->
-
             <!-- Reports -->
             <div class="col-12">
               <hr>
-              <div style="padding-top: 32px; text-align: center;">
-                ราคายาง ณ <span id="date-box" class="date-box" style="background-color: lightblue;"></span>
-                </span>
-              </div>
-
               <div class="card">
               </div>
             </div><!-- End Reports -->
@@ -257,94 +208,108 @@
         </div><!-- End Left side columns -->
       </div>
       <div class="row">
-        <div class="container mt-5">
+        <?php include_once('news.php');
+        ?>
+      </div>
+      <div class="product-info-section" style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 15px; background-color: white;">
+        <div class="section-title">
+          <h3><strong>ยางที่รับซื้อ</strong></h3>
+          <div class="col-lg-12">
+            <div class="row">
+
+              <!-- Sales Card -->
+              <div class="col-md-6">
+                <div class="card info-card sales-card">
+                  <div class="card-body d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-cart"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h5 class="card-title" style="font-size: 1.5rem;">ยางแห้ง</h5>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- End Sales Card -->
+
+              <div class="col-md-6">
+                <div class="card info-card revenue-card">
+                  <div class="card-body d-flex align-items-center">
+                    <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                      <i class="bi bi-cart"></i>
+                    </div>
+                    <div class="ps-3">
+                      <h5 class="card-title" style="font-size: 1.5rem;">ยางเปียก</h5>
+                    </div>
+                  </div>
+                </div>
+              </div><!-- End Revenue Card -->
+              <!-- End Revenue Card -->
+              <!-- End Revenue Card -->
+              <!-- End Revenue Card -->
+
+              <!-- Reports -->
+              <div class="col-12">
+                <hr>
+                <div class="card">
+                </div>
+              </div><!-- End Reports -->
+
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="filter">
+            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+              <li class="dropdown-header text-start">
+                <h6>Filter</h6>
+              </li>
+              <li><a class="dropdown-item" href="#">Today</a></li>
+              <li><a class="dropdown-item" href="#">This Month</a></li>
+              <li><a class="dropdown-item" href="#">This Year</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+
+      </div>
+      <div class="row">
+        <div class="container mt-12">
           <div class="row">
-          <div class="product-container">
-            <div class="product-info-section" style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 15px; background-color: white;">
+            <div class="product-container">
+              <div class="product-info-section" style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 15px; background-color: white;">
                 <h3><strong>รายชื่อร้านรับซื้อ</strong></h3>
                 <div class="card">
-                    <h5 class="card-header">ข้อมูลราคายาง</h5>
-                    <div class="table-responsive text-nowrap">
-                        <table class="table">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>ชื่อร้าน</th>
-                                    <th>ราคายางแห้ง</th>
-                                    <th>ราคายางเปียก</th>
-                                </tr>
-                            </thead>
-                            <tbody class="table-border-bottom-0">
-                                <?php if (!empty($store_data)): ?>
-                                    <?php foreach ($store_data as $store_name => $prices): ?>
-                                        <tr>
-                                            <td><strong><?php echo htmlspecialchars($store_name); ?></strong></td>
-                                            <td><?php echo $prices['กลาง']; ?></td>
-                                            <td><?php echo $prices['ยางแห้ง']; ?></td>
-                                            <td><?php echo $prices['ยางเปียก']; ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="4">ไม่มีข้อมูล</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-              <div class="product-info-section" style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 15px; background-color: white;">
-                <div class="section-title">
-                  <h3><strong>ยางก้อนถ้วย</strong></h3>
-                </div>
-
-                <div class="layout nested-row wrap">
-                  <div class="product-card">
-                    <div class="card-style round-corner text-xs-center responsive-square">
-                      <div class="content">
-                        <div class="detail-container">
-                          <div class="detail">
-                            <div class="price text-red"><strong>140</strong></div>
-                            <div>บาท / กก</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="text-xs-center">ยางแห้ง</div>
+                  <h5 class="card-header">ข้อมูลราคายาง</h5>
+                  <div class="table-responsive text-nowrap">
+                    <table class="table">
+                      <thead class="table-dark">
+                        <tr>
+                          <th>ชื่อร้าน</th>
+                          <th>ราคายางแห้ง</th>
+                          <th>ราคายางเปียก</th>
+                        </tr>
+                      </thead>
+                      <tbody class="table-border-bottom-0">
+                        <?php if (!empty($store_data)): ?>
+                          <?php foreach ($store_data as $store_name => $prices): ?>
+                            <tr>
+                              <td><strong><?php echo htmlspecialchars($store_name); ?></strong></td>
+                              <td><?php echo $prices['กลาง']; ?></td>
+                              <td><?php echo $prices['ยางแห้ง']; ?></td>
+                              <td><?php echo $prices['ยางเปียก']; ?></td>
+                            </tr>
+                          <?php endforeach; ?>
+                        <?php else: ?>
+                          <tr>
+                            <td colspan="4">ไม่มีข้อมูล</td>
+                          </tr>
+                        <?php endif; ?>
+                      </tbody>
+                    </table>
                   </div>
-
-                  <div class="product-card">
-                    <div class="card-style round-corner text-xs-center responsive-square">
-                      <div class="content">
-                        <div class="detail-container">
-                          <div class="detail">
-                            <div class="price text-red"><strong>-</strong></div>
-                            <div>บาท / กก</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="text-xs-center">ยางเปียก</div>
-                  </div>
-
-                  <div class="product-card">
-                    <div class="card-style round-corner text-xs-center responsive-square">
-                      <div class="content">
-                        <div class="detail-container">
-                          <div class="detail">
-                            <div class="price text-red"><strong>125</strong></div>
-                            <div>บาท / กก</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="text-xs-center">SA (เล็ก สวย)</div>
-                  </div>
-                </div>
-
-                <div class="p-t-32 text-xs-center">
-                  ราคายาง ณ <div id="date-box" class="date-box"></div>
                 </div>
               </div>
             </div>

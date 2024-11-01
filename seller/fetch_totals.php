@@ -45,14 +45,26 @@ $stmt->bind_result($weekly_total);
 $stmt->fetch();
 $stmt->close();
 
-// ดึงยอดรายปี
-$sql_yearly = "SELECT SUM(total_price) as yearly_total FROM rubber_purchases WHERE seller_id = ? AND YEAR(purchase_date) = YEAR(CURDATE())";
+$selected_year = isset($_POST['year']) ? $_POST['year'] : date('Y');
+
+// ดึงยอดรายปีตามค่าปีที่เลือก
+$sql_yearly = "SELECT SUM(total_price) as yearly_total FROM rubber_purchases WHERE seller_id = ? AND YEAR(purchase_date) = ?";
 $stmt = $conn->prepare($sql_yearly);
-$stmt->bind_param("i", $seller_id);
+$stmt->bind_param("ii", $seller_id, $selected_year);
 $stmt->execute();
 $stmt->bind_result($yearly_total);
 $stmt->fetch();
 $stmt->close();
 
 $conn->close();
+
+// ตรวจสอบว่าหน้านี้ถูกเรียกใช้โดยตรงหรือไม่
+if (basename($_SERVER['SCRIPT_FILENAME']) === basename(__FILE__)) {
+    // แสดงผลเฉพาะเมื่อถูกเรียกโดยตรง
+    echo json_encode([
+        "daily_total" => $daily_total, 
+        "weekly_total" => $weekly_total, 
+        "yearly_total" => $yearly_total
+    ]);
+}
 ?>

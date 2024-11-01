@@ -111,36 +111,40 @@ $sql_yearly = "SELECT
     <div class="col-xxl-12 col-xl-12">
         <div class="card">
             <h1 class="card-title">ตารางจำนวนยางที่ขายในแต่ละแปลง</h1>
-            <!-- ฟอร์มสำหรับเลือกเดือนและปี -->
         </div>
-        <!-- ฟอร์มสำหรับเลือกเดือนและปี -->
         <div class="container mt-4">
             <div class="card p-4">
                 <h5 class="card-title">เลือกเดือนและปี (พ.ศ.)</h5>
                 <form method="POST" action="">
-                    <div class="mb-3">
-                        <label for="month" class="form-label">เลือกเดือน:</label>
-                        <select name="month" id="month" class="form-select">
-                            <?php for ($i = 1; $i <= 12; $i++) { ?>
-                                <option value="<?php echo $i; ?>" <?php if ($i == $selected_month) echo 'selected'; ?>><?php echo $thai_months[$i]; ?></option>
-                            <?php } ?>
-                        </select>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="month" class="form-label">เลือกเดือน:</label>
+                            <select name="month" id="month" class="form-select">
+                                <?php for ($i = 1; $i <= 12; $i++) { ?>
+                                    <option value="<?php echo $i; ?>" <?php if ($i == $selected_month) echo 'selected'; ?>>
+                                        <?php echo $thai_months[$i]; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="year" class="form-label">เลือกปี (พ.ศ.):</label>
+                            <select name="year" id="year" class="form-select">
+                                <?php for ($i = 2020; $i <= date('Y'); $i++) { ?>
+                                    <option value="<?php echo $i; ?>" <?php if ($i == $selected_year) echo 'selected'; ?>>
+                                        <?php echo $i + 543; ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
                     </div>
-
-                    <div class="mb-3">
-                        <label for="year" class="form-label">เลือกปี (พ.ศ.):</label>
-                        <select name="year" id="year" class="form-select">
-                            <?php for ($i = 2020; $i <= date('Y'); $i++) { ?>
-                                <option value="<?php echo $i; ?>" <?php if ($i == $selected_year) echo 'selected'; ?>><?php echo $i + 543; ?></option>
-                            <?php } ?>
-                        </select>
-                    </div>
-
                     <button type="submit" class="btn btn-primary">ดูข้อมูล</button>
                 </form>
             </div>
         </div>
     </div>
+
+
 
 
     <h1 class="card-title">ตารางข้อมูลเดือน <?php echo $thai_months[intval($selected_month)]; ?> พ.ศ. <?php echo $selected_year_th; ?></h1>

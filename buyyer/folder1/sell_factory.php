@@ -29,7 +29,8 @@ if (empty($store_id)) {
 $sql_inventory = "
     SELECT 
         rubber_type,
-        GREATEST(0, SUM(quantity)) AS current_inventory
+        GREATEST(0, SUM(quantity)) AS current_inventory,
+        GREATEST(0, SUM(total_price)) AS total_price
     FROM 
         rubber_purchases
     WHERE 
@@ -37,6 +38,7 @@ $sql_inventory = "
     GROUP BY 
         rubber_type;
 ";
+
 
 $stmt_inventory = $conn->prepare($sql_inventory);
 
@@ -52,18 +54,20 @@ if (!$stmt_inventory->execute()) {
 
 $result_inventory = $stmt_inventory->get_result();
 $inventory_data = [
-    'Dry' => 0,
-    'Wet' => 0,
+    'Dry' => ['quantity' => 0, 'total_price' => 0],
+    'Wet' => ['quantity' => 0, 'total_price' => 0],
 ];
 $total_inventory = 0;
 
 while ($row = $result_inventory->fetch_assoc()) {
     $rubber_type = $row['rubber_type'];
     $current_quantity = $row['current_inventory'] ?? 0;
+    $current_total_price = $row['total_price'] ?? 0;
 
     // จัดเก็บข้อมูลยางในคลังตามประเภท
     if (isset($inventory_data[$rubber_type])) {
-        $inventory_data[$rubber_type] = $current_quantity;
+        $inventory_data[$rubber_type]['quantity'] = $current_quantity;
+        $inventory_data[$rubber_type]['total_price'] = $current_total_price; // เก็บยอดรวม
     }
 
     // คำนวณจำนวนยางรวม
@@ -77,145 +81,100 @@ $conn->close();
 
 <div class="row">
     <div class="col-lg-4">
-
+        <!-- แสดงข้อมูลยางรวม -->
         <div class="row">
             <div class="col-lg-12">
-
-                <!-- Card ที่จะแสดงข้อมูลจาก PHP -->
                 <div class="card info-card customers-card">
-
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
                     <div class="card-body">
                         <h5 class="card-title">จำนวนยางในคลัง <span>| ยางร่วม</span></h5>
-
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i class="bi bi-box-seam"></i>
                             </div>
                             <div class="ps-3">
-                              
                                 <h6>ยางรวม: <?= htmlspecialchars($total_inventory) ?> กก</h6>
+                                <h6>ยอดรับซื้อร่วม: <?= htmlspecialchars($inventory_data['Dry']['total_price'] + $inventory_data['Wet']['total_price']) ?> บาท</h6>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <!-- จบส่วนแสดงข้อมูล -->
-
             </div>
-            <div></div>
-
         </div>
-
-
     </div>
-    <div class="col-lg-4">
 
+    <!-- แสดงข้อมูลยางแห้ง -->
+    <div class="col-lg-4">
         <div class="row">
             <div class="col-lg-12">
-
-                <!-- Card ที่จะแสดงข้อมูลจาก PHP -->
                 <div class="card info-card customers-card">
-
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
                     <div class="card-body">
                         <h5 class="card-title">จำนวนยางในคลัง <span>| ยางแห้ง</span></h5>
-
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i class="bi bi-box-seam"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>ยางแห้ง: <?= htmlspecialchars($inventory_data['Dry'] ?? 0) ?> กก</h6>
+                                <h6>ยางแห้ง: <?= htmlspecialchars($inventory_data['Dry']['quantity'] ?? 0) ?> กก</h6>
+                                <h6>ยอดรับซื้อ: <?= htmlspecialchars($inventory_data['Dry']['total_price'] ?? 0) ?> บาท</h6>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <!-- จบส่วนแสดงข้อมูล -->
-
             </div>
-            <div></div>
-
         </div>
-
-
     </div>
-    <div class="col-lg-4">
 
+    <!-- แสดงข้อมูลยางเปียก -->
+    <div class="col-lg-4">
         <div class="row">
             <div class="col-lg-12">
-
-                <!-- Card ที่จะแสดงข้อมูลจาก PHP -->
                 <div class="card info-card customers-card">
-
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
                     <div class="card-body">
                         <h5 class="card-title">จำนวนยางในคลัง <span>| ยางเปียก</span></h5>
-
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i class="bi bi-box-seam"></i>
                             </div>
-                            <div class="ps-3"> 
-                                <h6>ยางเปียก: <?= htmlspecialchars($inventory_data['Wet'] ?? 0) ?> กก</h6>
+                            <div class="ps-3">
+                                <h6>ยางเปียก: <?= htmlspecialchars($inventory_data['Wet']['quantity'] ?? 0) ?> กก</h6>
+                                <h6>ยอดรวม: <?= htmlspecialchars($inventory_data['Wet']['total_price'] ?? 0) ?> บาท</h6>
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <!-- จบส่วนแสดงข้อมูล -->
-
             </div>
-            <div></div>
-
         </div>
-
-
     </div>
+
+    <!-- ปุ่มสำหรับเปิด Modal -->
     <div class="col-lg-12">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sellRubberModal">
+            ขายยางให้กับโรงงาน
+        </button>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-12">
+        <div class="card info-card customers-card" style="height: 700px;">
+            <?php
+            include('seller_rub.php')
+            ?>
+        </div>
+    </div>
+</div>
 
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">ขายยางให้กับโรงงาน</h5>
 
-                <!-- General Form Elements -->
+<!-- Modal สำหรับแสดงฟอร์มขายยาง -->
+<div class="modal fade" id="sellRubberModal" tabindex="-1" aria-labelledby="sellRubberModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sellRubberModalLabel">ขายยางให้กับโรงงาน</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- ฟอร์มขายยาง -->
                 <form method="POST" action="process_rubber_sale.php">
                     <input type="hidden" name="store_id" value="<?= htmlspecialchars($store_id) ?>">
 
@@ -225,6 +184,7 @@ $conn->close();
                             <input type="text" class="form-control" id="factoryName" name="factory_name" required>
                         </div>
                     </div>
+
                     <div class="row mb-3">
                         <label for="rubberType" class="col-sm-2 col-form-label">ประเภทของยาง</label>
                         <div class="col-sm-10">
@@ -270,14 +230,8 @@ $conn->close();
                             <button type="submit" class="btn btn-primary">บันทึกการขาย</button>
                         </div>
                     </div>
-
-                </form><!-- End General Form Elements -->
-
+                </form>
             </div>
         </div>
-
     </div>
-
-
-
 </div>
